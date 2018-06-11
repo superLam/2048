@@ -1,8 +1,8 @@
 import random
 import curses
 from itertools import chain
-
-
+ 
+#移动操作
 class Action(object):
 
     UP = 'up'
@@ -42,7 +42,7 @@ class Grid(object):
         empty_cells = [(i, j) for i in range(self.size) for j in range(self.size) if self.cells[i][j] == 0]
         (i, j) = random.choice(empty_cells)
         self.cells[i][j] = 4 if random.randrange(100) >= 90 else 2
-
+    #矩阵转置，可用于判断是否能合并
     def transpose(self):
         self.cells = [list(row) for row in zip(*self.cells)]
 
@@ -162,15 +162,15 @@ class Screen(object):
                 self.cast(self.help_string1)
 
         self.cast(self.help_string2)
-
+ 
 
 class GameManager(object):
-
+    #初始化
     def __init__(self, size=4, win_num=2048):
         self.size = size
         self.win_num = win_num
         self.reset()
-
+    #重新开始
     def reset(self):
         self.state = 'init'
         self.win = False
@@ -178,11 +178,11 @@ class GameManager(object):
         self.score = 0
         self.grid = Grid(self.size)
         self.grid.reset()
-
+    
     @property
     def screen(self):
         return Screen(screen=self.stdscr, score=self.score, grid=self.grid, win=self.win, over=self.over)
-
+    #判断能否移动
     def move(self, direction):
         if self.can_move(direction):
             getattr(self.grid, 'move_' + direction)()
@@ -242,5 +242,4 @@ class GameManager(object):
 
 
 if __name__ == '__main__':
-    curses.wrapper(GameManager())
-
+    curses.wrapper(GameManager()) #读取输入字符
